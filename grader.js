@@ -23,9 +23,11 @@ References:
 
 var fs = require('fs');
 var program = require('commander');
+var rest = require('restler');
 var cheerio = require('cheerio');
 var HTMLFILE_DEFAULT = "index.html";
 var CHECKSFILE_DEFAULT = "checks.json";
+
 
 var assertFileExists = function(infile) {
     var instr = infile.toString();
@@ -36,6 +38,8 @@ var assertFileExists = function(infile) {
     return instr;
 };
 
+
+
 var cheerioHtmlFile = function(htmlfile) {
     return cheerio.load(fs.readFileSync(htmlfile));
 };
@@ -43,6 +47,7 @@ var cheerioHtmlFile = function(htmlfile) {
 var loadChecks = function(checksfile) {
     return JSON.parse(fs.readFileSync(checksfile));
 };
+
 
 var checkHtmlFile = function(htmlfile, checksfile) {
     $ = cheerioHtmlFile(htmlfile);
@@ -65,10 +70,31 @@ if(require.main == module) {
     program
         .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
         .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
+        .option('-u, --url <url>', 'url to index.html')
         .parse(process.argv);
+   if (program.url !=null){
+    console.log(program.url);
+	rest.get(program.url).on('complete', function(data, response) {
+	  //console.log(response.headers);
+	  //console.log(data);
+	  fs.writeFile("tograde.html", data, function(err) {
+	    if(err) {
+		console.log(err);
+	    } else {
+		//console.log("The file was saved!");
+	    }
+		}); 
+	});
+	program.file="tograde.html"
+   }
+// if url then save url to file name X
+// and call the function using this file.
+// remove the file at the end
+
     var checkJson = checkHtmlFile(program.file, program.checks);
     var outJson = JSON.stringify(checkJson, null, 4);
+    console.log(program.file);
     console.log(outJson);
 } else {
     exports.checkHtmlFile = checkHtmlFile;
-}
+h}
