@@ -79,9 +79,10 @@ if(require.main == module) {
 	  //console.log(data);
 	  fs.writeFile("tograde.html", data, function(err) {
 	    if(err) {
-		console.log(err);
+		//console.log(err);
+		console.log("The file was NOT saved!");
 	    } else {
-		//console.log("The file was saved!");
+		console.log("The file was saved!");
 	    }
 		}); 
 	});
@@ -97,4 +98,4 @@ if(require.main == module) {
     console.log(outJson);
 } else {
     exports.checkHtmlFile = checkHtmlFile;
-h}
+}
